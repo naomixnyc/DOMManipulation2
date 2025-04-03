@@ -6,8 +6,7 @@ mainEl.style.backgroundColor = 'var(--main-bg)'
 mainEl.innerHTML = '<h1>DOM Manipulation</h1>'
 //mainEl.textContent='<h1>DOM Manipulation</h1>'
 mainEl.classList.add('flex-ctr')
-const selects = document.getElementsByName("selectBy")
-console.log(selects)
+//console.log(selects)
 //getElementsByTagName
 //document.getElementsByTagName(body)
 
@@ -20,7 +19,7 @@ const topMenuEl = document.getElementById('top-menu')
 topMenuEl.style.height = '100%'
 topMenuEl.style.backgroundColor = 'var(--top-menu-bg)'
 topMenuEl.classList.add('flex-around')
-
+//console.log(topMenuEl)
 
 // - - - - - Part 3 - - - - - -
 // Adding Menu Buttons
@@ -38,7 +37,6 @@ var menuLinks = [
     a.textContent = link.text // <-----
   
     topMenuEl.appendChild(a)
-    //document.body.append(a)
   })
 
 
@@ -47,7 +45,6 @@ var menuLinks = [
 //      ----- ALAB 316.3.1: DOM Manipulation (Part Two) ----
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-// - - - - - Part 3 - - - - - -
 const subMenuEl = document.getElementById('sub-menu')
 subMenuEl.style.height = '100%'
 subMenuEl.style.backgroundColor='var(--sub-menu-bg)'
@@ -77,31 +74,64 @@ var menuLinks = [
 
 topMenuEl.addEventListener('click', (e) => { // adding addEventListener to the <nav> instead of each <a>
   e.preventDefault()
-  console.log(e.target.tagName)
-  console.log(e.target.textContent)
-  if (e.target.tagName !== "A") {   
+  //console.log(e.target.tagName)
+  //console.log(e.target.textContent)
+
+  if (e.target.tagName !== "A") {
     return
   }
+
+
+
   const topMenuLinks = document.querySelectorAll('#top-menu a') // NodeList //'#top-menu > a' > necessary?
-console.log(topMenuLinks)
+  //console.log(topMenuLinks)
 
-  if (e.target.classList.contains('active')) {
-    e.target.classList.remove('active')
-    return
+  const linkObject = menuLinks.find(link => link.text === e.target.textContent) // .find() handles the case where no match exists 
+  //console.log(linkObject)
+
+  e.target.classList.toggle('active')
+
+  //topMenuLinks.forEach(link => link.classList.remove('active')) // remove from all
+  topMenuLinks.forEach(link => {   //removes from all other than e.target
+    if (link !== e.target) {
+      link.classList.remove('active')
+    }
+  })
+
+
+  if (linkObject && linkObject.subLinks) {
+    if (e.target.classList.contains('active')) {
+      subMenuEl.style.top = '100%'
+      subMenuEl.innerHTML = ''
+      linkObject.subLinks.forEach(link => {
+        const a = document.createElement('a')
+        a.href = link.href
+        a.textContent = link.text
+        subMenuEl.appendChild(a)
+      })
+    } else {
+      subMenuEl.style.top = '0'
+    }
   }
 
-  
-  console.log(e, e.target)
-  //topMenuLinks.classList.toggle('active')
-  // topMenuLinks.forEach(link => link.classList.remove('active'))
-  //console.log(e.target.value.toLowerCase())
-  // e.target.classList.toggle('active')
 
-  topMenuLinks.forEach(link => link.classList.remove('active'))
+  subMenuEl.addEventListener('click', (e) => {
+    e.preventDefault()
 
-  e.target.classList.add('active')
+    if (e.target.tagName !== "A") {
+      return
+    }
+    //console.log(e.target.textContent)
+
+    subMenuEl.style.top = '0'
+
+    topMenuLinks.forEach(link => link.classList.remove('active'))
+
+    mainEl.innerHTML = `<h1>${e.target.textContent}</h1>`
+  })
+
+
 })
-
 
 
 
